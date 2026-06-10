@@ -1,0 +1,6 @@
+{
+  "name": "Disaster Alert",
+  "description": "Real-time monitoring for Landslides, Bridge collapsing, and Earthquakes.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
