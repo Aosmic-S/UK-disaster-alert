@@ -41,7 +41,11 @@ data class AppSettingsEntity(
     val isLandslideActive: Boolean = true,
     val isBridgeActive: Boolean = true,
     val isEarthquakeActive: Boolean = true,
-    val publicDataEnabled: Boolean = true
+    val publicDataEnabled: Boolean = true,
+    val landslideName: String = "Landslide Prevention Array",
+    val bridgeName: String = "Bridge Stability Array",
+    val earthquakeName: String = "Seismic Array",
+    val themeMode: String = "Immersive"
 )
 
 @Dao
@@ -53,7 +57,7 @@ interface SettingsDao {
     suspend fun updateSettings(settings: AppSettingsEntity)
 }
 
-@Database(entities = [SensorHistoryEntity::class, AppSettingsEntity::class], version = 1, exportSchema = false)
+@Database(entities = [SensorHistoryEntity::class, AppSettingsEntity::class], version = 2, exportSchema = false)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun sensorHistoryDao(): SensorHistoryDao
     abstract fun settingsDao(): SettingsDao

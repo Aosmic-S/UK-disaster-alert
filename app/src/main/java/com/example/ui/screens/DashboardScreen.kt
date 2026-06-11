@@ -118,17 +118,17 @@ fun DashboardScreen(viewModel: MainViewModel) {
                 if (settings.isLandslideActive) {
                     val soilVal = latest.field1 ?: 0f
                     val status = when {
-                        soilVal > settings.goodThreshold -> "STABLE"
-                        soilVal < settings.criticalThreshold -> "CRITICAL"
+                        soilVal < settings.goodThreshold -> "STABLE"
+                        soilVal > settings.criticalThreshold -> "CRITICAL"
                         else -> "WARNING"
                     }
                     Box(modifier = Modifier.weight(1f)) {
                         SensorMetricCard(
-                            label = "Landslide Sensor",
+                            label = settings.landslideName,
                             value = soilVal.toString(),
                             subtitle = "Saturation",
                             status = status,
-                            isCritical = soilVal < settings.criticalThreshold
+                            isCritical = soilVal > settings.criticalThreshold
                         )
                     }
                 }
@@ -137,7 +137,7 @@ fun DashboardScreen(viewModel: MainViewModel) {
                     val erosionVal = latest.field2 ?: 0f
                     Box(modifier = Modifier.weight(1f)) {
                         SensorMetricCard(
-                            label = "Bridge Safety",
+                            label = settings.bridgeName,
                             value = erosionVal.toString(),
                             subtitle = "Erosion",
                             status = "ACTIVE",
@@ -170,7 +170,7 @@ fun DashboardScreen(viewModel: MainViewModel) {
                             modifier = Modifier.fillMaxWidth()
                         ) {
                             Text(
-                                "EARTHQUAKE ACTIVITY (XYZ)",
+                                settings.earthquakeName.uppercase(),
                                 fontSize = 10.sp,
                                 fontWeight = FontWeight.Bold,
                                 color = MaterialTheme.colorScheme.onSurfaceVariant,

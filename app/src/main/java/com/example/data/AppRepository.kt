@@ -11,7 +11,7 @@ class AppRepository(context: Context) {
     private val db = Room.databaseBuilder(
         context.applicationContext,
         AppDatabase::class.java, "disaster-db"
-    ).build()
+    ).fallbackToDestructiveMigration().build()
 
     val historyFlow: Flow<List<SensorHistoryEntity>> = db.sensorHistoryDao().getHistory()
     

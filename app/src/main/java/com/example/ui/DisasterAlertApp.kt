@@ -8,8 +8,9 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AdminPanelSettings
 import androidx.compose.material.icons.filled.Dashboard
+import androidx.compose.material.icons.filled.Explore
 import androidx.compose.material.icons.filled.History
-import androidx.compose.material.icons.filled.Shield
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -31,6 +32,8 @@ import kotlinx.serialization.Serializable
 import com.example.ui.screens.DashboardScreen
 import com.example.ui.screens.HistoryScreen
 import com.example.ui.screens.AdminScreen
+import com.example.ui.screens.SettingsScreen
+import com.example.ui.screens.SimulationScreen
 
 @Serializable
 object DashboardRoute
@@ -40,6 +43,12 @@ object HistoryRoute
 
 @Serializable
 object AdminRoute
+
+@Serializable
+object SettingsRoute
+
+@Serializable
+object SimulationRoute
 
 @Composable
 fun DisasterAlertApp(viewModel: MainViewModel) {
@@ -67,7 +76,7 @@ fun DisasterAlertApp(viewModel: MainViewModel) {
                     }
                     Column {
                         Text(
-                            "SENTINEL-3",
+                            "DISASTER ALERT UK",
                             fontSize = 14.sp,
                             fontWeight = FontWeight.Bold,
                             color = MaterialTheme.colorScheme.onSurface,
@@ -86,13 +95,21 @@ fun DisasterAlertApp(viewModel: MainViewModel) {
                     }
                 }
                 IconButton(
-                    onClick = { /* TODO */ },
+                    onClick = { 
+                        navController.navigate(SettingsRoute) {
+                            popUpTo(navController.graph.findStartDestination().id) {
+                                saveState = true
+                            }
+                            launchSingleTop = true
+                            restoreState = true
+                        }
+                    },
                     modifier = Modifier
                         .size(40.dp)
                         .clip(CircleShape)
                         .background(MaterialTheme.colorScheme.onSurface.copy(alpha = 0.1f))
                 ) {
-                    Icon(Icons.Filled.Shield, contentDescription = "Security", tint = MaterialTheme.colorScheme.onSurfaceVariant)
+                    Icon(Icons.Filled.Settings, contentDescription = "Settings", tint = MaterialTheme.colorScheme.onSurfaceVariant)
                 }
             }
         },
@@ -134,6 +151,21 @@ fun DisasterAlertApp(viewModel: MainViewModel) {
                 )
                 
                 NavigationBarItem(
+                    icon = { Icon(Icons.Filled.Explore, contentDescription = "Simulate") },
+                    label = { Text("SIMULATE", fontSize = 10.sp, fontWeight = FontWeight.Bold, letterSpacing = 1.sp) },
+                    selected = currentDestination?.hierarchy?.any { it.route == SimulationRoute::class.qualifiedName } == true,
+                    onClick = {
+                        navController.navigate(SimulationRoute) {
+                            popUpTo(navController.graph.findStartDestination().id) {
+                                saveState = true
+                            }
+                            launchSingleTop = true
+                            restoreState = true
+                        }
+                    }
+                )
+                
+                NavigationBarItem(
                     icon = { Icon(Icons.Filled.AdminPanelSettings, contentDescription = "Admin") },
                     label = { Text("SECURE", fontSize = 10.sp, fontWeight = FontWeight.Bold, letterSpacing = 1.sp) },
                     selected = currentDestination?.hierarchy?.any { it.route == AdminRoute::class.qualifiedName } == true,
@@ -159,7 +191,9 @@ fun DisasterAlertApp(viewModel: MainViewModel) {
         ) {
             composable<DashboardRoute> { DashboardScreen(viewModel) }
             composable<HistoryRoute> { HistoryScreen(viewModel) }
+            composable<SimulationRoute> { SimulationScreen() }
             composable<AdminRoute> { AdminScreen(viewModel) }
+            composable<SettingsRoute> { SettingsScreen(viewModel) }
         }
     }
 }

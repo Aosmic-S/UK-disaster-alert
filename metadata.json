@@ -1,5 +1,5 @@
 {
-  "name": "Disaster Alert",
+  "name": "Disaster Alert UK",
   "description": "Real-time monitoring for Landslides, Bridge collapsing, and Earthquakes.",
   "requestFramePermissions": [],
   "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]

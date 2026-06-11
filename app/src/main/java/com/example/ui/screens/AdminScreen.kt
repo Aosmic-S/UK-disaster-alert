@@ -93,7 +93,7 @@ fun AdminDashboard(viewModel: MainViewModel) {
             OutlinedTextField(
                 value = goodThreshold,
                 onValueChange = { goodThreshold = it },
-                label = { Text("Good Threshold (> value)") },
+                label = { Text("Good Threshold (< value)") },
                 modifier = Modifier.fillMaxWidth(),
                 colors = OutlinedTextFieldDefaults.colors(unfocusedBorderColor = Color(0xFF334155)),
                 shape = RoundedCornerShape(12.dp)
@@ -101,7 +101,7 @@ fun AdminDashboard(viewModel: MainViewModel) {
             OutlinedTextField(
                 value = criticalThreshold,
                 onValueChange = { criticalThreshold = it },
-                label = { Text("Critical Threshold (< value)") },
+                label = { Text("Critical Threshold (> value)") },
                 modifier = Modifier.fillMaxWidth(),
                 colors = OutlinedTextFieldDefaults.colors(unfocusedBorderColor = Color(0xFF334155)),
                 shape = RoundedCornerShape(12.dp)
@@ -120,15 +120,31 @@ fun AdminDashboard(viewModel: MainViewModel) {
         }
 
         AdminSection("SENSOR MODULES") {
-            AdminSwitchItem("Landslide Prevention Array", settings.isLandslideActive) { 
-                viewModel.updateSettings(settings.copy(isLandslideActive = it)) 
-            }
-            AdminSwitchItem("Bridge Stability Array", settings.isBridgeActive) { 
-                viewModel.updateSettings(settings.copy(isBridgeActive = it)) 
-            }
-            AdminSwitchItem("Seismic Array", settings.isEarthquakeActive) { 
-                viewModel.updateSettings(settings.copy(isEarthquakeActive = it)) 
-            }
+            var lName by remember(settings.landslideName) { mutableStateOf(settings.landslideName) }
+            var bName by remember(settings.bridgeName) { mutableStateOf(settings.bridgeName) }
+            var eName by remember(settings.earthquakeName) { mutableStateOf(settings.earthquakeName) }
+
+            AdminSwitchItemWithRename(
+                name = lName,
+                onNameChange = { lName = it },
+                checked = settings.isLandslideActive,
+                onCheckedChange = { viewModel.updateSettings(settings.copy(isLandslideActive = it, landslideName = lName)) },
+                onSave = { viewModel.updateSettings(settings.copy(landslideName = lName)) }
+            )
+            AdminSwitchItemWithRename(
+                name = bName,
+                onNameChange = { bName = it },
+                checked = settings.isBridgeActive,
+                onCheckedChange = { viewModel.updateSettings(settings.copy(isBridgeActive = it, bridgeName = bName)) },
+                onSave = { viewModel.updateSettings(settings.copy(bridgeName = bName)) }
+            )
+            AdminSwitchItemWithRename(
+                name = eName,
+                onNameChange = { eName = it },
+                checked = settings.isEarthquakeActive,
+                onCheckedChange = { viewModel.updateSettings(settings.copy(isEarthquakeActive = it, earthquakeName = eName)) },
+                onSave = { viewModel.updateSettings(settings.copy(earthquakeName = eName)) }
+            )
         }
 
         AdminSection("DATA EXFILTRATION") {
@@ -211,6 +227,41 @@ fun AdminSection(title: String, content: @Composable ColumnScope.() -> Unit) {
                 modifier = Modifier.padding(bottom = 8.dp)
             )
             content()
+        }
+    }
+}
+
+@Composable
+fun AdminSwitchItemWithRename(name: String, onNameChange: (String) -> Unit, checked: Boolean, onCheckedChange: (Boolean) -> Unit, onSave: () -> Unit) {
+    Column(modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp)) {
+        Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.fillMaxWidth()) {
+            OutlinedTextField(
+                value = name,
+                onValueChange = onNameChange,
+                modifier = Modifier.weight(1f),
+                colors = OutlinedTextFieldDefaults.colors(
+                    unfocusedBorderColor = Color.Transparent,
+                    focusedBorderColor = MaterialTheme.colorScheme.primary,
+                    unfocusedContainerColor = Color(0xFF1E293B),
+                    focusedContainerColor = Color(0xFF1E293B)
+                ),
+                shape = RoundedCornerShape(8.dp),
+                textStyle = LocalTextStyle.current.copy(fontSize = 14.sp)
+            )
+            Spacer(modifier = Modifier.width(8.dp))
+            Switch(
+                checked = checked,
+                onCheckedChange = onCheckedChange,
+                colors = SwitchDefaults.colors(
+                    checkedThumbColor = MaterialTheme.colorScheme.primary,
+                    checkedTrackColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.3f),
+                    uncheckedThumbColor = Color(0xFF94A3B8),
+                    uncheckedTrackColor = Color(0xFF334155)
+                )
+            )
+        }
+        TextButton(onClick = onSave, modifier = Modifier.align(Alignment.End)) {
+            Text("SAVE RENAME", fontSize = 10.sp, fontWeight = FontWeight.Bold, letterSpacing = 1.sp)
         }
     }
 }
